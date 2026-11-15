@@ -1,0 +1,7 @@
+<?php
+require_once __DIR__ . '/../config/database.php';require_once __DIR__ . '/../includes/auth.php';require_login();
+$q=$pdo->prepare('SELECT m.*,s.full_name,s.admission_no,c.class_name,u.subject_name FROM marks m JOIN students s ON s.id=m.student_id JOIN classes c ON c.id=m.class_id JOIN subjects u ON u.id=m.subject_id WHERE m.teacher_id=? ORDER BY m.academic_year DESC,m.term,m.assessment_date DESC,s.full_name LIMIT 300');$q->execute([current_teacher_id()]);$rows=$q->fetchAll();
+$pageTitle='Recorded marks';require __DIR__ . '/../includes/header.php';?>
+<div class="page-heading"><div><span class="eyebrow">ASSESSMENT RECORDS</span><h1>Recorded marks</h1><p class="muted">Review the latest 300 mark entries.</p></div><a class="btn primary" href="record.php">＋ Record marks</a></div>
+<div class="table-card"><table><thead><tr><th>Student</th><th>Class</th><th>Subject</th><th>Assessment</th><th>Term / Year</th><th>Score</th></tr></thead><tbody><?php if(!$rows):?><tr><td colspan="6" class="empty">No marks recorded yet.</td></tr><?php endif;?><?php foreach($rows as $r):?><tr><td><strong><?=e($r['full_name'])?></strong><small><?=e($r['admission_no'])?></small></td><td><?=e($r['class_name'])?></td><td><?=e($r['subject_name'])?></td><td><?=e($r['assessment_name'])?></td><td><?=e($r['term'])?> / <?=e($r['academic_year'])?></td><td><strong><?=e($r['score'])?></strong> / <?=e($r['max_score'])?></td></tr><?php endforeach;?></tbody></table></div>
+<?php require __DIR__ . '/../includes/footer.php';?>
