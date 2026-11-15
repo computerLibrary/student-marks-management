@@ -4,9 +4,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends unzip libzip-de
     && docker-php-ext-install pdo pdo_mysql zip gd \
     && rm -rf /var/lib/apt/lists/*
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+RUN sed -i 's/Listen 80/Listen 8080/' /etc/apache2/ports.conf \
+    && sed -i 's/:80>/:8080>/' /etc/apache2/sites-available/000-default.conf
 WORKDIR /var/www/html
 COPY composer.json ./
 RUN composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
 COPY . /var/www/html/
 RUN chown -R www-data:www-data /var/www/html
-EXPOSE 80
+EXPOSE 8080
+CMD ["apache2-foreground"]
