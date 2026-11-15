@@ -1,0 +1,6 @@
+{
+  "name": "computerlibrary/student-marks-management",
+  "description": "Student Marks Management System",
+  "type": "project",
+  "require": { "php": "^8.2", "phpoffice/phpspreadsheet": "^2.2" }
+}
